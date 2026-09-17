@@ -1,0 +1,453 @@
+body{
+    min-height: 100vh;
+    margin: 0;
+    max-height: 100vh;
+    overflow: hidden;
+    background-image: url('cesped.png');
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+*{
+    box-sizing: border-box;
+}
+
+.fireflies {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.fireflies span {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fffed0;
+    box-shadow: 0 0 11px 3px rgba(255, 251, 157, 1),
+        0 0 30px 9px rgba(255, 222, 91, 0.8),
+        0 0 62px 18px rgba(255, 196, 55, 0.45);
+    opacity: 0;
+    animation: firefly-drift var(--duration) ease-in-out var(--delay) infinite;
+}
+
+.fireflies span:nth-child(1) { --x: 8%; --y: 18%; --duration: 7s; --delay: -1s; }
+.fireflies span:nth-child(2) { --x: 17%; --y: 72%; --duration: 9s; --delay: -5s; }
+.fireflies span:nth-child(3) { --x: 26%; --y: 34%; --duration: 8s; --delay: -3s; }
+.fireflies span:nth-child(4) { --x: 37%; --y: 84%; --duration: 10s; --delay: -7s; }
+.fireflies span:nth-child(5) { --x: 48%; --y: 14%; --duration: 8.5s; --delay: -4s; }
+.fireflies span:nth-child(6) { --x: 58%; --y: 78%; --duration: 7.5s; --delay: -2s; }
+.fireflies span:nth-child(7) { --x: 68%; --y: 27%; --duration: 9.5s; --delay: -6s; }
+.fireflies span:nth-child(8) { --x: 76%; --y: 62%; --duration: 8s; --delay: -1.5s; }
+.fireflies span:nth-child(9) { --x: 86%; --y: 12%; --duration: 10s; --delay: -8s; }
+.fireflies span:nth-child(10) { --x: 93%; --y: 44%; --duration: 7s; --delay: -3.5s; }
+.fireflies span:nth-child(11) { --x: 12%; --y: 91%; --duration: 8.5s; --delay: -6.5s; }
+.fireflies span:nth-child(12) { --x: 44%; --y: 48%; --duration: 9s; --delay: -2.5s; }
+.fireflies span:nth-child(13) { --x: 72%; --y: 90%; --duration: 10.5s; --delay: -5.5s; }
+.fireflies span:nth-child(14) { --x: 96%; --y: 82%; --duration: 8s; --delay: -4.5s; }
+
+@keyframes firefly-drift {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translate3d(0, 8px, 0) scale(0.7);
+    }
+    35% {
+        opacity: 1;
+        transform: translate3d(12px, -18px, 0) scale(1.1);
+    }
+    65% {
+        opacity: 0.55;
+        transform: translate3d(-10px, -32px, 0) scale(0.85);
+    }
+}
+
+.centered{
+    margin: auto;
+    width: max-content;
+}
+
+.flipbook{
+    margin: 0 auto;
+    width: min(108.288vw, 902.4px);
+    height: min(65.424vw, 620.4px);
+    max-height: 620.4px;
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1800px;
+    perspective-origin: 50% 45%;
+    transform: translate3d(-25%, 0, 0);
+    transition: transform 1.2s cubic-bezier(0.22, 0.8, 0.2, 1);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.flipbook.is-open {
+    transform: translate3d(0, 0, 0);
+}
+
+.flipbook.is-final {
+    transform: translate3d(25%, 0, 0);
+}
+
+.flipbook:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.9);
+    outline-offset: 6px;
+}
+
+.flipbook::before {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: -28px;
+    height: 40px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0) 70%);
+    filter: blur(8px);
+    z-index: -1;
+}
+
+.flipbook::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 28px 35px rgba(0,0,0,0.18), 12px 18px 20px rgba(30,41,22,0.12);
+}
+
+.flipbook .leaf{
+    position: absolute;
+    transform-style: preserve-3d;
+    height: 100%;
+    width: 50%;
+    background-color: #fff;
+    left: 50%;
+    transition: transform 1.2s cubic-bezier(0.22, 0.8, 0.2, 1), box-shadow 0.4s ease;
+    transform: rotate3d(0,1,0,0deg);
+    transform-origin: left 0px;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+
+/* While a leaf is actively turning, lift it visually above the rest of
+   the book and give it a real cast shadow, like a page held up in the air. */
+.flipbook .leaf.flipping{
+    box-shadow: 6px 20px 34px rgba(0,0,0,0.42), -2px 10px 18px rgba(0,0,0,0.2);
+    z-index: 500 !important;
+}
+
+.flipbook .leaf::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 10px;
+    background: linear-gradient(to right, rgba(0,0,0,0.15), rgba(0,0,0,0.02), rgba(255,255,255,0.15));
+    transform: translateX(1px) skewY(0deg);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.flipbook .leaf .page{
+    transform-style: preserve-3d;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Soft shadow that sweeps across whichever face is visible as the leaf
+   turns, peaking mid-flip like light grazing through real paper. */
+.flipbook .leaf .page::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0) 55%);
+    opacity: var(--shade, 0);
+    pointer-events: none;
+    z-index: 5;
+    border-radius: inherit;
+}
+
+.flipbook .leaf .page.front{
+    transform: rotate3d(0,1,0,0deg) translate3d(0,0,0.1px);
+    box-shadow: inset 3px 0 7px rgba(0, 0, 0, 0.12);
+}
+
+.flipbook .leaf .page.front:not(.external){
+    box-shadow: inset 5px 0px 5px -5px #0005;
+}
+
+.flipbook .leaf .page.back{
+    transform: rotate3d(0,1,0,180deg) translate3d(0,0,0.1px);
+}
+
+.flipbook .leaf .page.back:not(.external){
+    box-shadow: inset -5px 0px 5px -5px #0005;
+}
+
+.disable{
+    user-select: none;
+    opacity: 0.6;
+}
+
+.title{
+    text-align: center;
+    width: 100%;
+    padding: 0em, !important;
+    padding-top: 2em;
+}
+
+.page:not(.cover-page) {
+    background-image: url('hoja.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
+.page:not(.cover-page)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(0.5px);
+    z-index: 0;
+}
+
+.page:not(.cover-page) > * {
+    position: relative;
+    z-index: 1;
+}
+
+.cover-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    overflow: hidden;
+    padding: 0;
+    background-image: none;
+}
+
+.crystal-heart::before,
+.crystal-heart::after {
+    content: "";
+    position: absolute;
+    left: 49%;
+    top: 48%;
+    width: 28%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    clip-path: polygon(50% 94%, 7% 51%, 7% 29%, 18% 13%, 33% 9%, 50% 25%, 67% 9%, 82% 13%, 93% 29%, 93% 51%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.crystal-heart::before {
+    background: rgba(173, 5, 192, 0.351);
+    box-shadow: 0 0 28px 12px rgba(254, 18, 183, 0.344),
+        0 0 64px 22px rgba(243, 130, 228, 0.94);
+    animation: crystal-heart-glow 4.8s ease-in-out infinite;
+}
+
+.crystal-heart::after {
+    background: linear-gradient(125deg, transparent 34%, rgba(255, 255, 255, 0.98) 48%, transparent 62%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    animation: crystal-heart-shine 6.5s ease-in-out infinite;
+}
+
+@keyframes crystal-heart-glow {
+    0%, 100% {
+        opacity: 0.8;
+        filter: blur(6px);
+        transform: translate(-50%, -50%) scale(0.94);
+    }
+    50% {
+        opacity: 1;
+        filter: blur(11px);
+        transform: translate(-50%, -50%) scale(1.04);
+    }
+}
+
+@keyframes crystal-heart-shine {
+    0%, 55%, 100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateX(-16%);
+    }
+    68% {
+        opacity: 1;
+    }
+    82% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateX(16%);
+    }
+}
+
+.cover-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1;
+    filter: saturate(1.2) contrast(1.1);
+}
+
+.cover-text {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 1em 0.75em 1.25em;
+    background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0.18));
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    border-bottom: 3px solid rgba(255,255,255,0.2);
+}
+
+.cover-text h1,
+.cover-text em {
+    margin: 0;
+    display: block;
+}
+
+.page{
+    padding: clamp(0.65em, 1.8vw, 1em);
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
+.page img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: inherit;
+}
+
+.page.front{
+    border-radius: 0em 1em 1em 0;
+}
+
+.page.back{
+    border-radius: 1em 0em 0em 1em;
+}
+
+.leaf{
+    background-color: #0000 !important;
+}
+
+.pageNumber{
+    font-size: 0.75em;
+    position: absolute;
+    bottom: 0.5em;
+}
+
+.front .pageNumber{
+    right: 0.75em;
+}
+
+.back .pageNumber{
+    left: 0.75em;
+}
+
+.contents-row{
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.contents-row .spacer{
+    flex: 1 1;
+    height: 1em;
+    border-bottom: 1px dashed #000;
+}
+
+.contents-row .text{
+    flex: 0 0 auto
+}
+
+h1,h2,h3{
+    font-family: "Playball", cursive;
+    color: #1a1a1a;
+    text-align: center;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+p{
+    margin: 0;
+    font-family: "Playball", cursive;
+    font-style: normal;
+    font-size: 17px;
+    line-height: 1.22;
+    color: #171717;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+    font-weight: 400;
+}
+
+h2 {
+    margin: 0 0 0.35em;
+    font-size: clamp(1em, 2.2vw, 1.5em);
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .flipbook {
+        width: min(103.776vw, 609.12px);
+        height: min(78.96vw, 473.76px);
+    }
+
+    .page {
+        padding: 0.6em;
+    }
+
+    p {
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+}
+
+body[onload]{
+    transform: scale(1.5);
+    transform-origin: center top;
+}
+
+body[onload] .leaf:nth-child(1){
+    transform: rotate3d(0,1,0,-128deg) !important;
+}
+
+body[onload] .leaf:nth-child(2){
+    transform: rotate3d(0,1,0,-70deg) !important;
+}
+
+body[onload] .leaf:nth-child(3){
+    transform: rotate3d(0,1,0,-40deg) !important;
+}
+body[onload] div.leaf:nth-child(4)> div:nth-child(1){
+    background-color: #e76f51;
+}
+
+.cd__intro{
+    background: #c0e;
+}
